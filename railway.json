@@ -1,9 +1,6 @@
 {
   "build": {
-    "builder": "NIXPACKS",
-    "buildCommand": "",
     "directory": "FlaskAPI",
-    "outputDirectory": "",
     "env": {
       "PORT": "5000"
     }
@@ -12,4 +9,5 @@
     "start": "python app.py"
   }
 }
+
 
