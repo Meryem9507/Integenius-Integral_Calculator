@@ -1,0 +1,11 @@
+{
+  "build": {
+    "env": {
+      "PORT": "5000"
+    }
+  },
+  "scripts": {
+    "start": "python FlaskAPI/app.py"
+  }
+}
+
