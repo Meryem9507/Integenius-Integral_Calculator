@@ -23,8 +23,8 @@ android {
     defaultConfig {
         applicationId = "com.integenius"
         minSdk = 21
-        targetSdk = 34 
-        versionCode = 1
+        targetSdk = 35 
+        versionCode = 8
         versionName = "1.0.0"
     }
 

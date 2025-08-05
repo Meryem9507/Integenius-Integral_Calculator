@@ -1,7 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <network-security-config>
   <domain-config cleartextTrafficPermitted="false">
-    <domain includeSubdomains="true">integenius-integral-calculator-4.onrender.com</domain>
-    <domain includeSubdomains="true">integenius-proxy.ongenmeryem.workers.dev</domain>
+    <domain includeSubdomains="true">integenius-integral-calculator-1.onrender.com</domain>
   </domain-config>
 </network-security-config>
