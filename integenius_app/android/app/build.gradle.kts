@@ -30,7 +30,7 @@ android {
 
     signingConfigs {
         create("release") {
-            val keystorePropertiesFile = file("../key.properties")
+            val keystorePropertiesFile = file("C:/integenius-github/Integenius-Definite_Integral_Calculator/integenius_app/android/key.properties")
             val keystoreProperties = Properties()
             keystoreProperties.load(keystorePropertiesFile.inputStream())
 
