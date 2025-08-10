@@ -1,6 +1,8 @@
 import os
 import logging
-from flask import Flask, request, jsonify
+from flask import Flask, request, jsonify, abort
+from flask_limiter import Limiter
+from flask_limiter.util import get_remote_address
 from flask_cors import CORS
 from sympy import (
     symbols, sin, cos, tan, cot, sec, csc, atan, asin, acos,
@@ -13,9 +15,50 @@ import traceback
 app = Flask(__name__)
 CORS(app)
 
-logging.basicConfig(level=logging.INFO)
+logging.basicConfig(
+    level=logging.INFO,
+    format='%(asctime)s %(levelname)s %(message)s',
+    handlers=[
+        logging.FileHandler("flask_app.log"),
+        logging.StreamHandler()
+    ]
+)
+
+@app.before_request
+def log_request_info():
+    logging.info(f"Request from {request.remote_addr} to {request.method} {request.path}")
+
+@app.after_request
+def log_response_info(response):
+    logging.info(f"Response status: {response.status} for {request.method} {request.path} from {request.remote_addr}")
+    return response
+
+
+API_TOKEN = "SECRET_TOKEN_647597"
+
+def token_required(f):
+    from functools import wraps
+    @wraps(f)
+    def decorated(*args, **kwargs):
+        token = None
+        auth_header = request.headers.get('Authorization')
+        if auth_header and auth_header.startswith("Bearer "):
+            token = auth_header.split(" ")[1]
+        if not token or token != API_TOKEN:
+            abort(401, description="Unauthorized: Token is missing or invalid.")
+        return f(*args, **kwargs)
+    return decorated
+
+limiter = Limiter(
+    app,
+    key_func=get_remote_address,
+    default_limits=["100 per hour"]  
+)
+ 
 
 @app.route('/')
+@token_required
+@limiter.limit("20 per minute")
 def home():
     return "API is running!"
 
