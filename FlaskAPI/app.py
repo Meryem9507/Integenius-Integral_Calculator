@@ -59,11 +59,46 @@ limiter.init_app(app)
  
 
 @app.route('/')
-@token_required
 @limiter.limit("20 per minute")
 def home():
-    return "API is running!"
-
+    """Main endpoint - No token required for health checks"""
+    
+    # Get to know health check bots and monitoring services
+    user_agent = request.headers.get('User-Agent', '').lower()
+    remote_addr = request.remote_addr
+    
+    # These requests are health checks, no tokens required
+    health_check_indicators = [
+        'go-http-client',
+        'uptimerobot',
+        'pingdom',
+        'monitor',
+        'health',
+        'check'
+    ]
+    
+    is_health_check = (
+        remote_addr == '127.0.0.1' or  # Render's own requests
+        any(indicator in user_agent for indicator in health_check_indicators)
+    )
+    
+    if is_health_check:
+        return {"status": "healthy", "message": "API is running"}, 200
+    
+    # Token control for normal requests
+    token = None
+    auth_header = request.headers.get('Authorization')
+    if auth_header and auth_header.startswith("Bearer "):
+        token = auth_header.split(" ")[1]
+    
+    if not token or token != API_TOKEN:
+        print(f"Authorization header: {auth_header}")
+        print(f"Extracted token: {token}")
+        print(f"User-Agent: {request.headers.get('User-Agent')}")
+        print(f"Remote Address: {remote_addr}")
+        abort(401, description="Unauthorized: Token is missing or invalid.")
+    
+    return {"status": "authenticated", "message": "API is running with valid token"}
 
 # We define the variable x as a real number
 x = symbols('x', real=True)
