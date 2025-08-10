@@ -45,6 +45,8 @@ def token_required(f):
         if auth_header and auth_header.startswith("Bearer "):
             token = auth_header.split(" ")[1]
         if not token or token != API_TOKEN:
+            print(f"Authorization header: {auth_header}")
+            print(f"Extracted token: {token}")
             abort(401, description="Unauthorized: Token is missing or invalid.")
         return f(*args, **kwargs)
     return decorated
