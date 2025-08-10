@@ -50,10 +50,10 @@ def token_required(f):
     return decorated
 
 limiter = Limiter(
-    app,
     key_func=get_remote_address,
     default_limits=["100 per hour"]  
 )
+limiter.init_app(app)
  
 
 @app.route('/')
